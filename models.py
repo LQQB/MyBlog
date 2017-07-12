@@ -10,9 +10,17 @@ class User(db.Model):
     id = db.Column(db.String(45), primary_key=True)
     username = db.Column(db.String(255))
     password = db.Column(db.String(255))
+    # 定义 1 对 多 关系
+    posts = db.relationship(
+        'Post',
+        backref='t_user',
+        lazy='dynamic'
+    )
 
-    # def __init__(self, username):
-    #     self.username = username
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
 
     # 被默认调用. 与 repr() 类似, 将对象转化为便于供 Python 解释器读取的形式,
     # 返回一个可以用来表示对象的可打印字符串.
@@ -20,7 +28,63 @@ class User(db.Model):
         """Define the string format for instance of User."""
         return "<Model User `{}`>".format(self.username)
 
+posts_tags = db.Table('posts_tags',
+                      db.Column('post_id', db.String(45), db.ForeignKey('t_post.id')),
+                      db.Column('tag_id', db.String(45), db.ForeignKey('t_tag.id')) )
+
+class Post(db.Model):
+
+    __tablename__ = 't_post'
+    id = db.Column(db.String(45), primary_key=True)
+    title = db.Column(db.String(255))
+    text = db.Column(db.Text())
+    publish_date = db.Column(db.DateTime)
+    user_id = db.Column(db.String(45), db.ForeignKey('t_user.id'))  # 外键约束
+
+    comments = db.relationship(
+        'Comment',
+        backref='t_post',
+        lazy='dynamic')
+
+    tags = db.relationship(
+        'Tag',
+        secondary = posts_tags,
+        backref = db.backref('t_post', lazy='dynamic')
+    )
+
+    def __init__(self, title):
+        self.title = title
+
+    def __repr__(self):
+        return "<Model Post `{}`>".format(self.title)
 # if __name__ == '__main__':
 #      user = User('LQB')
 #      print(user)
 #      print(user.id)
+
+class Tag(db.Model) :
+    __tablename__ = 't_tag'
+    id = db.Column(db.String(45), primary_key=True)
+    name = db.Column(db.String(255))
+
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return '<Model Comment `{}`>'.format(self.name)
+
+class Comment(db.Model) :
+
+    __tablename__ = 't_comment'
+    id =db.Column(db.String(45), primary_key=True)
+    name = db.Column(db.String(255))
+    text = db.Column(db.Text())
+    date = db.Column(db.DateTime())
+    post_id = db.Column(db.String(45), db.ForeignKey('t_post.id'))
+
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return '<Model Comment `{}`>'.format(self.name)
+
