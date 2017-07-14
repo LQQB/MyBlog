@@ -5,7 +5,6 @@ from main import app
 from models import db, User, Post, Tag, Comment, posts_tags
 
 def sidebar_data():
-
     recent = db.session.query(Post).order_by(
         Post.publish_date.desc()
     ).limit(5).all()
@@ -23,9 +22,7 @@ def home(page=1):
     posts = Post.query.order_by(
         Post.publish_date.desc()
     ).paginate(page, 10)
-
     recent, top_tags = sidebar_data()
-
     return render_template('home.html',
                            posts=posts,
                            recent=recent,

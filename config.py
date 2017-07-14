@@ -1,5 +1,6 @@
 class Config(object):
     """Base config class."""
+    SECRET_KEY = 'LQQB'
     pass
 
 class ProdConfig(Config):
