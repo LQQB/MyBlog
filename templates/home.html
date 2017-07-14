@@ -1,9 +1,7 @@
 {% extends "base.html"%}
 {% block title %}LQB Blog{% endblock %}
 {% block body %}
-<!-- The data object from view function: `home()` -->
-<div class="row">
-  <div class="col-lg-9">
+    <div class="col-lg-9" style="border-style:solid;">
     <!-- Get Pagination object-->
     {% for post in posts.items %}
     <div class="row">
