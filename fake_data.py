@@ -1,8 +1,8 @@
-from uuid import uuid4
-from models import db, User, Tag, Post
-
-import random
 import datetime
+import random
+from uuid import uuid4
+
+from LQBBlog.models import db, User, Tag, Post
 
 user = User(id=(str(uuid4())), username='LQB', password='123456')
 db.session.add(user)
@@ -17,7 +17,7 @@ tag_four = Tag(id=(str(uuid4())),name= '玄学')
 Tags = [tag_one, tag_two, tag_three, tag_four]
 
 
-Text = '放空自己 ╮(╯_╰)╭  一片空白~~~~~~~~~~~~~~~'
+Text = u'放空自己 ╮(╯_╰)╭  一片空白~~~~~~~~~~~~~~~'
 
 for i in range(100):
     new_Post = Post(title='Post'+str(i))

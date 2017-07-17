@@ -14,7 +14,7 @@
         {{ post.text | truncate(255) | safe }}
         <!-- Set the link for read more -->
         <a href="{{
-          url_for('post', post_id=post.id)
+          url_for('blog.post', post_id=post.id)
           }}">Read More</a>
       </div>
     </div>
@@ -27,7 +27,7 @@
         {% for post in recent %}
         <!-- Set the link for recent posts. -->
         <li><a href="{{
-          url_for('post', post_id=post.id)
+          url_for('blog.post', post_id=post.id)
           }}">{{ post.title }}</a></li>
         {% endfor %}
       </ul>
@@ -37,12 +37,12 @@
       <ul>
         {% for tag in top_tags %}
         <li><a href="{{
-          url_for('tag', tag_name=tag[0].name)
+          url_for('blog.tag', tag_name=tag[0].name)
           }}">{{ tag[0].name }}</a></li>
         {% endfor %}
       </ul>
     </div>
   </div>
   <!-- Call the Macro: `render_pagination` from base.html -->
-  {{ render_pagination(posts, 'home') }}
+  {{ render_pagination(posts, 'blog.home') }}
 {% endblock %}

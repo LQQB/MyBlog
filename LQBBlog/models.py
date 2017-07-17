@@ -1,8 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
-from main import  app
+
 
 # SQLAlchemy 会自动的从 app 对象中的 DevConfig 中加载连接数据库的配置项
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 
 class User(db.Model):
 
@@ -83,7 +83,8 @@ class Comment(db.Model) :
     date = db.Column(db.DateTime())
     post_id = db.Column(db.String(45), db.ForeignKey('t_post.id'))
 
-    def __init__(self, name):
+    def __init__(self,id, name):
+        self.id = id
         self.name = name
 
     def __repr__(self):
