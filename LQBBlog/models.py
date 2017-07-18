@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-
+from LQBBlog.extensions import bcrypt
 
 # SQLAlchemy 会自动的从 app 对象中的 DevConfig 中加载连接数据库的配置项
 db = SQLAlchemy()
@@ -20,13 +20,20 @@ class User(db.Model):
     def __init__(self, id, username, password):
         self.id = id
         self.username = username
-        self.password = password
+        self.password = self.set_password(password)
 
     # 被默认调用. 与 repr() 类似, 将对象转化为便于供 Python 解释器读取的形式,
     # 返回一个可以用来表示对象的可打印字符串.
     def __repr__(self):
         """Define the string format for instance of User."""
         return "<Model User `{}`>".format(self.username)
+
+    # 给密码加密
+    def set_password(self, password):
+        return bcrypt.generate_password_hash(password)
+
+    def check_password(self, password):
+        return bcrypt.check_password_hash(self.password, password)
 
 posts_tags = db.Table('posts_tags',
                       db.Column('post_id', db.String(45), db.ForeignKey('t_post.id')),
@@ -52,7 +59,8 @@ class Post(db.Model):
         backref = db.backref('t_post', lazy='dynamic')
     )
 
-    def __init__(self, title):
+    def __init__(self,id, title):
+        self.id = id
         self.title = title
 
     def __repr__(self):
