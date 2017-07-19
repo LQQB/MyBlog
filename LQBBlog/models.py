@@ -1,10 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
 from LQBBlog.extensions import bcrypt
+from flask_login import UserMixin
 
 # SQLAlchemy 会自动的从 app 对象中的 DevConfig 中加载连接数据库的配置项
 db = SQLAlchemy()
 
-class User(db.Model):
+class User(UserMixin, db.Model):
 
     __tablename__ = 't_user'
     id = db.Column(db.String(45), primary_key=True)
@@ -34,6 +35,31 @@ class User(db.Model):
 
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
+
+
+    # def is_authenticated(self):
+    #
+    #     if isinstance(self, AnonymousUserMixin):
+    #         return False
+    #     else:
+    #         return True
+    #
+    # def is_active(self):
+    #     return
+    #
+    # def is_anonymous(self):
+    #
+    #     if isinstance(self, AnonymousUserMixin):
+    #         return True
+    #     else:
+    #         return False
+    #
+    # def get_id(self):
+    #     """Get the user's uuid from database."""
+    #
+    #     return self.id.encode('unicode-escape')
+
+
 
 posts_tags = db.Table('posts_tags',
                       db.Column('post_id', db.String(45), db.ForeignKey('t_post.id')),

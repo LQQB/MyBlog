@@ -1,5 +1,5 @@
-from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, PasswordField
+from flask_wtf import FlaskForm         # flask 提供的 form 表单的校验框架
+from wtforms import StringField, TextAreaField, PasswordField, BooleanField
 from wtforms.validators import  DataRequired, Length, EqualTo
 from LQBBlog.models import db, User
 
@@ -22,6 +22,7 @@ class LoginForm(FlaskForm):
 
     username = StringField('UserName', [DataRequired(), Length(max=255)])
     password = PasswordField('PassWord', [DataRequired()] )
+    remember = BooleanField('Remember Me')
 
     def validator(self):
         check_validator = super(LoginForm, self).validate()
@@ -37,6 +38,8 @@ class LoginForm(FlaskForm):
         if not user.check_password(self.password.data):
             self.username.errors.append('有户名或密码无效')
             return False
+
+        return True
 
 class RegisterForm(FlaskForm):
 

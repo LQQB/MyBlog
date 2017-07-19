@@ -7,6 +7,9 @@ from sqlalchemy import func
 
 from LQBBlog.forms import CommentForm, PostForm
 from LQBBlog.models import db, User, Post, Tag, Comment, posts_tags
+from LQBBlog.extensions import login_manger
+from flask_login import login_required, current_user
+
 
 blog_blueprint = Blueprint(
     'blog',
@@ -96,13 +99,18 @@ def user(username):
                            top_tags=top_tags)
 
 @blog_blueprint.route('/new', methods=['GET', 'POST'])
+@login_required     # 该注解的页面 不能够被匿名用户查看
 def new_post():
     form = PostForm()
+
+    if not current_user():     # 代理对象 current_user 来访问和表示当前登录的对象,
+        return  redirect(url_for('main.login'))
 
     if form.validate_on_submit():
         new_post = Post(id=str(uuid4()), title=form.title.data)
         new_post.text = form.text.data
         new_post.publish_date = datetime.datetime.now()
+        new_post.users = current_user()
 
         db.session.add(new_post)
         db.session.commit()
