@@ -18,11 +18,11 @@ def index():
 
 @main_blueprint.route('/login', methods=['POST', 'GET'])
 def login():
-
     form = LoginForm()
-    if form.validate_on_submit():
+    if form.validate_on_submit():   # validate_on_submit 这个方法 会调用 self.is_submitted() and self.validate() ，
+                                    # 为了校验用户名密码是否正确，在 class LoginForm 重写了 validate() 这个方法
 
-        user = User.query.filter_by(username=form.username.data).one()
+        user = User.query.filter_by(username=form.username.data).first()
         login_user(user, remember=form.remember.data)   # login_user 能够将已登录并通过 load_user() 的用户对应的 User 对象, 保存在 session 中
 
         flash('您已登录', category='success')
@@ -37,7 +37,7 @@ def logout():
     logout_user()
 
     flash('你已经注销了', category='success')
-    return redirect('blog.home')
+    return redirect(url_for('main.login'))
 
 @main_blueprint.route('/register', methods=['POST', 'GET'])
 def register():

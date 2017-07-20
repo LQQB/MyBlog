@@ -2,12 +2,11 @@ import datetime
 from os import path
 from  uuid import uuid4
 
-from flask import render_template, Blueprint, redirect, url_for
+from flask import render_template, Blueprint, redirect, url_for, flash
 from sqlalchemy import func
 
 from LQBBlog.forms import CommentForm, PostForm
 from LQBBlog.models import db, User, Post, Tag, Comment, posts_tags
-from LQBBlog.extensions import login_manger
 from flask_login import login_required, current_user
 
 
@@ -103,14 +102,14 @@ def user(username):
 def new_post():
     form = PostForm()
 
-    if not current_user():     # 代理对象 current_user 来访问和表示当前登录的对象,
+    if not current_user:     # 代理对象 current_user 来访问和表示当前登录的对象,
         return  redirect(url_for('main.login'))
 
     if form.validate_on_submit():
         new_post = Post(id=str(uuid4()), title=form.title.data)
         new_post.text = form.text.data
         new_post.publish_date = datetime.datetime.now()
-        new_post.users = current_user()
+        new_post.users = current_user
 
         db.session.add(new_post)
         db.session.commit()
@@ -121,11 +120,17 @@ def new_post():
                            form=form)
 
 @blog_blueprint.route('/edit/<string:id>', methods=['GET', 'POST'])
+@login_required
 def edit_post(id):
 
     post = Post.query.get_or_404(id)
-    form = PostForm()
 
+
+    if not post.user_id == current_user.id :
+        flash('文章仅本人可以修改', category='success')
+        return  redirect(url_for('blog.home'))
+
+    form = PostForm()
     if form.validate_on_submit():
         post.title = form.title.data
         post.text = form.text.data

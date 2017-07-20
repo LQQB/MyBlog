@@ -23,20 +23,18 @@ class LoginForm(FlaskForm):
     username = StringField('UserName', [DataRequired(), Length(max=255)])
     password = PasswordField('PassWord', [DataRequired()] )
     remember = BooleanField('Remember Me')
-
-    def validator(self):
+    def validate(self):
         check_validator = super(LoginForm, self).validate()
-
         if not check_validator:
             return  False
 
         user = User.query.filter_by(username=self.username.data).first()
         if not user:
-            self.username.errors.append('有户名或密码无效')
+            self.username.errors.append('用户名或密码无效')
             return  False
 
         if not user.check_password(self.password.data):
-            self.username.errors.append('有户名或密码无效')
+            self.username.errors.append('用户名或密码无效')
             return False
 
         return True
@@ -47,7 +45,7 @@ class RegisterForm(FlaskForm):
     password = PasswordField('PassWord', [DataRequired(), Length(min=8)])
     agin_password = PasswordField('Agin_PassWord', [DataRequired(), EqualTo('password')])
 
-    def validator(self):
+    def validate(self):
         check_validator = super(RegisterForm, self).validate()
 
         if not check_validator:
@@ -55,7 +53,7 @@ class RegisterForm(FlaskForm):
 
         user = User.query.filter_by(username=self.username.data).first()
         if user:
-            self.username.errors.append('有户名或密码无效')
+            self.username.errors.append('用户名或密码无效')
             return False
         return True
 

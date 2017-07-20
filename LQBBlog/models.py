@@ -1,11 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
 from LQBBlog.extensions import bcrypt
-from flask_login import UserMixin
+from flask_login import UserMixin,AnonymousUserMixin
 
 # SQLAlchemy 会自动的从 app 对象中的 DevConfig 中加载连接数据库的配置项
 db = SQLAlchemy()
 
-class User(UserMixin, db.Model):
+class User(db.Model):
 
     __tablename__ = 't_user'
     id = db.Column(db.String(45), primary_key=True)
@@ -33,31 +33,29 @@ class User(UserMixin, db.Model):
     def set_password(self, password):
         return bcrypt.generate_password_hash(password)
 
+    # 密码校验
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password, password)
 
 
-    # def is_authenticated(self):
-    #
-    #     if isinstance(self, AnonymousUserMixin):
-    #         return False
-    #     else:
-    #         return True
-    #
-    # def is_active(self):
-    #     return
-    #
-    # def is_anonymous(self):
-    #
-    #     if isinstance(self, AnonymousUserMixin):
-    #         return True
-    #     else:
-    #         return False
-    #
-    # def get_id(self):
-    #     """Get the user's uuid from database."""
-    #
-    #     return self.id.encode('unicode-escape')
+    def is_authenticated(self):
+        # if isinstance(self, AnonymousUserMixin):
+        #     return False
+        # else:
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        # if isinstance(self, AnonymousUserMixin):
+        #     return True
+        # else:
+        return False
+
+    def get_id(self):
+        """Get the user's uuid from database."""
+        return self.id.encode('unicode-escape')
 
 
 
