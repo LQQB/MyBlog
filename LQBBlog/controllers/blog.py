@@ -2,11 +2,12 @@ import datetime
 from os import path
 from  uuid import uuid4
 
-from flask import render_template, Blueprint, redirect, url_for, flash
+from flask import render_template, Blueprint, redirect, url_for, flash, abort
 from sqlalchemy import func
 
 from LQBBlog.forms import CommentForm, PostForm
 from LQBBlog.models import db, User, Post, Tag, Comment, posts_tags
+from LQBBlog.extensions import poster_permission, Permission, UserNeed, admin_permission
 from flask_login import login_required, current_user
 
 
@@ -74,7 +75,7 @@ def tag(tag_name):
     """View function for tag page"""
 
     tag = db.session.query(Tag).filter_by(name=tag_name).first_or_404()
-    posts = tag.posts.order_by(Post.publish_date.desc()).all()
+    posts = tag.podbts.order_by(Post.publish_date.desc()).all()
     recent, top_tags = sidebar_data()
 
     return render_template('tag.html',
@@ -109,7 +110,7 @@ def new_post():
         new_post = Post(id=str(uuid4()), title=form.title.data)
         new_post.text = form.text.data
         new_post.publish_date = datetime.datetime.now()
-        new_post.users = current_user
+        new_post.user_id = current_user.id
 
         db.session.add(new_post)
         db.session.commit()
@@ -121,29 +122,42 @@ def new_post():
 
 @blog_blueprint.route('/edit/<string:id>', methods=['GET', 'POST'])
 @login_required
+@poster_permission.require(http_exception=403)
 def edit_post(id):
 
     post = Post.query.get_or_404(id)
 
+    if not current_user:     # 代理对象 current_user 来访问和表示当前登录的对象,
+        return  redirect(url_for('main.login'))
 
+    print(post.user_id)
+    print(current_user.id)
     if not post.user_id == current_user.id :
         flash('文章仅本人可以修改', category='success')
-        return  redirect(url_for('blog.home'))
+        return  redirect(url_for('blog.post', post_id=id))
 
-    form = PostForm()
-    if form.validate_on_submit():
-        post.title = form.title.data
-        post.text = form.text.data
-        post.publish_date = datetime.datetime.now()
+    permission = Permission(UserNeed(post.user_id))         # 当 user 是 poster 或者 admin 时, 才能够编辑文章
 
-        # 修改 文章
-        db.session.add(post)
-        db.session.commit()
+    if permission.can() or admin_permission.can():
+        form = PostForm()
 
-        return redirect(url_for('blog.post', post_id=post.id))
+        if form.validate_on_submit():
+            post.title = form.title.data
+            post.text = form.text.data
+            post.publish_date = datetime.datetime.now()
 
-    return render_template('edit_post.html',
-                           form=form,
-                           post=post)
+            # 修改 文章
+            db.session.add(post)
+            db.session.commit()
+
+            return redirect(url_for('blog.post', post_id=post.id))
+
+    else:
+        abort(403)
+
+    # Still retain the original content, if validate is false.
+    form.title.data = post.title
+    form.text.data = post.text
+    return render_template('edit_post.html', form=form, post=post)
 
 

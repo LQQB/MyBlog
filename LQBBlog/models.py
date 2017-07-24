@@ -5,6 +5,10 @@ from flask_login import UserMixin,AnonymousUserMixin
 # SQLAlchemy 会自动的从 app 对象中的 DevConfig 中加载连接数据库的配置项
 db = SQLAlchemy()
 
+users_roles = db.Table('users_roles',
+                      db.Column('user_id', db.String(45), db.ForeignKey('t_user.id')),
+                      db.Column('role_id', db.String(45), db.ForeignKey('t_role.id')) )
+
 class User(db.Model):
 
     __tablename__ = 't_user'
@@ -16,6 +20,12 @@ class User(db.Model):
         'Post',
         backref='t_user',
         lazy='dynamic'
+    )
+
+    roles = db.relationship(
+        'Role',
+        secondary=users_roles,
+        backref=db.backref('t_user', lazy='dynamic')
     )
 
     def __init__(self, id, username, password):
@@ -57,7 +67,20 @@ class User(db.Model):
         """Get the user's uuid from database."""
         return self.id.encode('unicode-escape')
 
+class Role(db.Model) :
 
+    __tablename__ = 't_role'
+    id = db.Column(db.String(45), primary_key=True)
+    name = db.Column(db.String(255), unique=True)
+    description = db.Column(db.String(255))
+
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+
+
+    def __repr__(self):
+        return '<Model Role {}>'.format(self.name)
 
 posts_tags = db.Table('posts_tags',
                       db.Column('post_id', db.String(45), db.ForeignKey('t_post.id')),
@@ -72,12 +95,12 @@ class Post(db.Model):
     publish_date = db.Column(db.DateTime)
     user_id = db.Column(db.String(45), db.ForeignKey('t_user.id'))  # 外键约束
 
-    comments = db.relationship(
+    comments = db.relationship( # 定义 1 对 多 关系
         'Comment',
         backref='t_post',
         lazy='dynamic')
 
-    tags = db.relationship(
+    tags = db.relationship(    # 定义 多 对 多 关系
         'Tag',
         secondary = posts_tags,
         backref = db.backref('t_post', lazy='dynamic')

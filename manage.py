@@ -27,6 +27,7 @@ def make_shell_context():
                 Post=models.Post,
                 Comment=models.Comment,
                 Tag=models.Tag,
+                Role=models.Role,
                 Server=Server)
 
 # 通过 manager.py 来执行命令行是十分有必要lask app object 时，直接运行默认的 python CLI 会导致这些 Flask 扩展返回错误。
