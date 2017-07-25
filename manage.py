@@ -15,7 +15,7 @@ manager = Manager(app)
 
 migrate = Migrate(app, models.db)
 
-manager.add_command('server', Server(host='192.168.58.1', port=5000) )
+manager.add_command('server', Server(host='127.0.0.1', port=5000) )
 manager.add_command('db', MigrateCommand)
 
 @manager.shell
