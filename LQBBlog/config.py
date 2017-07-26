@@ -15,3 +15,6 @@ class DevConfig(Config):
 
     CELERY_RESULT_BACKEND = "amqp://guest:guest@localhost:15672//"
     CELERY_BROKER_URL = "amqp://guest:guest@localhost:15672//"
+
+    #### Flask-Cache's config
+    CACHE_TYPE = 'simple'   # 缓存配置

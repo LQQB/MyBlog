@@ -3,7 +3,7 @@ from flask import Flask,redirect, url_for
 from LQBBlog.config import DevConfig
 from LQBBlog.controllers import blog, main
 from LQBBlog.models import db
-from LQBBlog.extensions import bcrypt, login_manger, principal, flask_celery
+from LQBBlog.extensions import bcrypt, login_manger, principal, flask_celery, cache
 from flask_principal import identity_loaded, UserNeed, RoleNeed
 from flask_login import current_user
 
@@ -21,6 +21,7 @@ def create_app(object_name):
     login_manger.init_app(app)
     principal.init_app(app)
     flask_celery.init_app(app)
+    cache.init_app(app)
 
     @identity_loaded.connect_via(app)
     def on_identity_loaded(sender, identity):

@@ -4,6 +4,7 @@ from flask_login import LoginManager  #  Flask 提供用户 session 的管理机
 from flask_principal import  Principal, Permission, RoleNeed, UserNeed
 from flask_celery import Celery         # celery 实现异步任务
 from flask_mail import Mail
+from flask_cache import Cache       # 网页缓存
 
 
 bcrypt = Bcrypt()
@@ -11,6 +12,7 @@ login_manger = LoginManager()
 principal = Principal()
 flask_celery = Celery()
 mail = Mail()
+cache = Cache()
 # oauth = OAuth
 #
 # QQ = oauth.remote_app(
