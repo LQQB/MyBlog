@@ -2,10 +2,15 @@ from flask_bcrypt import Bcrypt       # 提供 Bcrypt 哈希算法 单向加密�
 #from flask_oauthlib import OAuth
 from flask_login import LoginManager  #  Flask 提供用户 session 的管理机制
 from flask_principal import  Principal, Permission, RoleNeed, UserNeed
+from flask_celery import Celery         # celery 实现异步任务
+from flask_mail import Mail
+
 
 bcrypt = Bcrypt()
 login_manger = LoginManager()
 principal = Principal()
+flask_celery = Celery()
+mail = Mail()
 # oauth = OAuth
 #
 # QQ = oauth.remote_app(
