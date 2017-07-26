@@ -1,8 +1,17 @@
 from flask_wtf import FlaskForm         # flask 提供的 form 表单的校验框架
-from wtforms import StringField, TextAreaField, PasswordField, BooleanField
+from wtforms import StringField, TextAreaField, PasswordField, BooleanField, widgets
 from wtforms.validators import  DataRequired, Length, EqualTo
 from LQBBlog.models import db, User
 
+class CKTextAreaWidget(widgets.TextArea):
+
+    def __call__(self, field, **kwargs):    # 将 HTML 标签中的 class 的值设定为 ckedior
+
+        kwargs.setdefault('class_', 'ckeditor')
+        return super(CKTextAreaWidget, self).__call__(field, **kwargs)
+
+class CKTextAreaField(TextAreaField):
+    widget = CKTextAreaWidget()
 
 class CommentForm(FlaskForm):
     '''
