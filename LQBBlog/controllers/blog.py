@@ -58,7 +58,6 @@ def home(page=1):
 @blog_blueprint.route('/post/<string:post_id>',  methods=('GET', 'POST') )
 @cache.cached(timeout=60, key_prefix=make_cache_key) # key_prefix 参数来进行定位, 而且该形参除了可以接受 String 类型对象之后, 也可以接收一个函数.
 def post(post_id):
-    print('------------------------')
     form = CommentForm()
     if form.validate_on_submit() :
         new_Commnet = Comment(id=str(uuid4()), name=form.name.data)

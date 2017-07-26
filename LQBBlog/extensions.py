@@ -5,7 +5,7 @@ from flask_principal import  Principal, Permission, RoleNeed, UserNeed
 from flask_celery import Celery         # celery 实现异步任务
 from flask_mail import Mail
 from flask_cache import Cache       # 网页缓存
-
+from flask_assets import Environment, Bundle # 压缩 css/js
 
 bcrypt = Bcrypt()
 login_manger = LoginManager()
@@ -13,6 +13,7 @@ principal = Principal()
 flask_celery = Celery()
 mail = Mail()
 cache = Cache()
+assets_env = Environment()
 # oauth = OAuth
 #
 # QQ = oauth.remote_app(
@@ -35,3 +36,16 @@ def load_user(user_id):
 admin_permission = Permission(RoleNeed('admin'))
 poster_permission = Permission(RoleNeed('poster'))
 default_permission = Permission(RoleNeed('default'))
+
+main_css = Bundle(
+    'css/bootstrap.min.css',
+    'css/bootstrap-theme.min.css',
+    filters='cssmin',
+    output='assets/css/common.css'  # 打包后的包文件的存放路径
+)
+
+main_js = Bundle(
+    'js/bootstrap.min.js',
+    filters='jsmin',
+    output='assets/js/common.js'
+)

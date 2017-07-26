@@ -18,3 +18,5 @@ class DevConfig(Config):
 
     #### Flask-Cache's config
     CACHE_TYPE = 'simple'   # 缓存配置
+
+    ASSETS_DEBUG = True
