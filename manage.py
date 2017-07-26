@@ -5,6 +5,8 @@ from flask_script import Manager, Server  # 最新2.0.5版本改了语法
 
 from LQBBlog import models, create_app
 
+from flask_assets import ManageAssets
+from LQBBlog.extensions import assets_env
 
 env = os.environ.get('flakWeb', 'dev')
 print('LQBBlog.config.%sConfig' %env.capitalize())
@@ -17,6 +19,7 @@ migrate = Migrate(app, models.db)
 
 manager.add_command('server', Server(host='127.0.0.1', port=5000) )
 manager.add_command('db', MigrateCommand)
+manager.add_command('assets', ManageAssets(assets_env))
 
 @manager.shell
 def make_shell_context():

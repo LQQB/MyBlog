@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,, initial-scale=1">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+    <!--<link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.css')}}">-->
+    {% assets "main_css" %}<link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">{% endassets %}
 
     <title>{% block title %}Home{% endblock %}</title>
     <!-- Macro: `render paginate` -->
@@ -73,6 +74,7 @@
         {% endblock%}
     </div>
     <script src="{{url_for('static', filename='js/jquery-3.2.1.min.js')}}"></script>
-    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    <!--<script src="{{url_for('static', filename='js/bootstrap.js')}}"></script>-->
+    {% assets "main_js" %}<script src="{{ ASSET_URL }}"></script>{% endassets %}
 </body>
 </html>

@@ -145,3 +145,16 @@ class Comment(db.Model) :
     def __repr__(self):
         return '<Model Comment `{}`>'.format(self.name)
 
+class Reminder(db.Model) :
+    __tablename__ = 't_reminders'
+    id = db.Column(db.String(45), primary_key=True)
+    date = db.Column(db.DateTime())
+    email = db.Column(db.String(255))
+    text = db.Column(db.Text())
+
+    def __init__(self, id, text):
+        self.id = id
+        self.text = text
+
+    def __repr__(self):
+        return '<Model Reminder `{}`>'.format(self.text[:20])

@@ -2,12 +2,12 @@ import datetime
 from os import path
 from  uuid import uuid4
 
-from flask import render_template, Blueprint, redirect, url_for, flash, abort
+from flask import render_template, Blueprint, redirect, url_for, flash, abort, request
 from sqlalchemy import func
 
 from LQBBlog.forms import CommentForm, PostForm
 from LQBBlog.models import db, User, Post, Tag, Comment, posts_tags
-from LQBBlog.extensions import poster_permission, Permission, UserNeed, admin_permission
+from LQBBlog.extensions import poster_permission, Permission, UserNeed, admin_permission, cache
 from flask_login import login_required, current_user
 
 
@@ -17,7 +17,18 @@ blog_blueprint = Blueprint(
     template_folder = path.join(path.pardir, 'templates', 'blog'),
     url_prefix= '/blog')
 
+# 每一次调用都会返回相同的结果, 这样就需要我们进一步的确认,
+# 只有在确定两次不同请求的都是同一个目标(即 URL)时, 才会将缓存返回, 否则创建一个新的缓存.
+def make_cache_key(*args, **kwargs):
+    """Dynamic creation the request url."""
+    path = request.path
+    args = str(hash(frozenset(request.args.items())))
+    return (path + args).encode('utf-8')
 
+
+# 缓存无参数的普通函数
+@cache.cached(timeout=7200, key_prefix='sidebar_data') # key_prefix: 函数名；timeout：设定缓存时长 7200 秒
+# 缓存带参数的普通函数 # @cache.memoize(60)
 def sidebar_data():
     recent = db.session.query(Post).order_by(
         Post.publish_date.desc()
@@ -32,6 +43,8 @@ def sidebar_data():
 
 @blog_blueprint.route('/')
 @blog_blueprint.route('/<int:page>')
+# 缓存无动态参数的视图函数
+@cache.cached(timeout=60) #　仍然是使用装饰器 @cache.cached(), 但却不必需要指定 key_prefix 形参. timeout ：表示缓存时长　秒
 def home(page=1):
     posts = Post.query.order_by(
         Post.publish_date.desc()
@@ -43,6 +56,7 @@ def home(page=1):
                            top_tags=top_tags)
 
 @blog_blueprint.route('/post/<string:post_id>',  methods=('GET', 'POST') )
+@cache.cached(timeout=60, key_prefix=make_cache_key) # key_prefix 参数来进行定位, 而且该形参除了可以接受 String 类型对象之后, 也可以接收一个函数.
 def post(post_id):
     form = CommentForm()
     if form.validate_on_submit() :
