@@ -6,6 +6,7 @@ from flask_celery import Celery         # celery 实现异步任务
 from flask_mail import Mail
 from flask_cache import Cache       # 网页缓存
 from flask_assets import Environment, Bundle # 压缩 css/js
+from flask_admin import  Admin
 
 bcrypt = Bcrypt()
 login_manger = LoginManager()
@@ -14,6 +15,8 @@ flask_celery = Celery()
 mail = Mail()
 cache = Cache()
 assets_env = Environment()
+flask_admin = Admin(name='后台管理系统')
+
 # oauth = OAuth
 #
 # QQ = oauth.remote_app(

@@ -2,10 +2,14 @@ from flask import Flask,redirect, url_for
 
 from LQBBlog.config import DevConfig
 from LQBBlog.controllers import blog, main
-from LQBBlog.models import db
-from LQBBlog.extensions import bcrypt, login_manger, principal, flask_celery, cache, assets_env, main_js, main_css
+from LQBBlog.controllers.admin import CustomView, CustomModelView
+
+from LQBBlog.models import db, Role, Tag, Reminder, Comment, Post, User
+from LQBBlog.extensions import bcrypt, login_manger, principal, flask_celery, cache, \
+    assets_env, main_js, main_css, flask_admin
 from flask_principal import identity_loaded, UserNeed, RoleNeed
 from flask_login import current_user
+
 
 def create_app(object_name):
 
@@ -27,7 +31,15 @@ def create_app(object_name):
     assets_env.register('main_css', main_css)
     assets_env.register('main_js', main_js)
 
-    @identity_loaded.connect_via(app)
+    flask_admin.init_app(app)
+    flask_admin.add_view(CustomView(name='Custom'))
+
+    models = [Role, Tag, Reminder, Comment, Post, User] # 给
+    for model in models:
+        flask_admin.add_view(
+            CustomModelView(model, db.session, category='Models'))
+
+    @identity_loaded.connect_via(app)       # 角色权限 设置
     def on_identity_loaded(sender, identity):
 
         identity.user = current_user
@@ -41,6 +53,5 @@ def create_app(object_name):
 
     app.register_blueprint(blog.blog_blueprint)     # 载入蓝图
     app.register_blueprint(main.main_blueprint)
-
     return app
 
