@@ -19,7 +19,6 @@ class CustomModelView(ModelView):
 
 
 class PostView(CustomModelView):
-
     form_overrides = dict(text=CKTextAreaField)
 
     column_searchable_list = ('text', 'title')

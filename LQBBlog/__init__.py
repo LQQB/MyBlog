@@ -35,9 +35,10 @@ def create_app(object_name):
     flask_admin.add_view(CustomView(name='Custom'))
 
     models = [Role, Tag, Reminder, Comment, Post, User] # 给
-    for model in models:
+    models_name = ['角色','标题', '邮件', '评论', '文章', '用户']
+    for model_index in range(len(models)):
         flask_admin.add_view(
-            CustomModelView(model, db.session, category='Models'))
+            CustomModelView(models[model_index], db.session, name=models_name[model_index], category='模块'))
 
     @identity_loaded.connect_via(app)       # 角色权限 设置
     def on_identity_loaded(sender, identity):
