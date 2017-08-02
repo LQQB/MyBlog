@@ -5,11 +5,11 @@ from LQBBlog.models import db, User
 
 class CKTextAreaWidget(widgets.TextArea):
 
-    def __call__(self, *args, **kwargs):    # 将 HTML 标签中的 class 的值设定为 ckedior
+    def __call__(self, field, **kwargs):    # 将 HTML 标签中的 class 的值设定为 ckedior
 
         print('__call___')
-        kwargs.setdefault('class', 'ckeditor')
-        return super(CKTextAreaWidget, self).__call__(args, **kwargs)
+        kwargs.setdefault('class_', 'ckeditor')
+        return super(CKTextAreaWidget, self).__call__(field, **kwargs)
 
 class CKTextAreaField(TextAreaField):
     widget = CKTextAreaWidget()

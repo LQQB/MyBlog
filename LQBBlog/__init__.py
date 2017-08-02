@@ -2,7 +2,7 @@ from flask import Flask,redirect, url_for
 
 from LQBBlog.config import DevConfig
 from LQBBlog.controllers import blog, main
-from LQBBlog.controllers.admin import CustomView, CustomModelView
+from LQBBlog.controllers.admin import CustomModelView, PostView, SysFileAdmin, AdminIndexView
 
 from LQBBlog.models import db, Role, Tag, Reminder, Comment, Post, User
 from LQBBlog.extensions import bcrypt, login_manger, principal, flask_celery, cache, \
@@ -10,6 +10,7 @@ from LQBBlog.extensions import bcrypt, login_manger, principal, flask_celery, ca
 from flask_principal import identity_loaded, UserNeed, RoleNeed
 from flask_login import current_user
 
+import os
 
 def create_app(object_name):
 
@@ -32,13 +33,17 @@ def create_app(object_name):
     assets_env.register('main_js', main_js)
 
     flask_admin.init_app(app)
-    flask_admin.add_view(CustomView(name='Custom'))
+    # flask_admin.add_view(CustomView(name='自定义'))
 
-    models = [Role, Tag, Reminder, Comment, Post, User] # 给
-    models_name = ['角色','标题', '邮件', '评论', '文章', '用户']
+    models = [Role, Tag, Reminder, Comment, User] # 给
+    models_name = ['角色','标题', '邮件', '评论', '用户']
     for model_index in range(len(models)):
         flask_admin.add_view(
-            CustomModelView(models[model_index], db.session, name=models_name[model_index], category='模块'))
+            CustomModelView(models[model_index], db.session, name=models_name[model_index], category='基础管理模块'))
+
+    flask_admin.add_view(PostView(Post, db.session, name='管理文章'))
+    flask_admin.add_view(SysFileAdmin(os.path.join(os.path.dirname(__file__), 'static/upload'),
+            '/static/upload', name='管理文件'))
 
     @identity_loaded.connect_via(app)       # 角色权限 设置
     def on_identity_loaded(sender, identity):
