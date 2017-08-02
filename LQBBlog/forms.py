@@ -7,6 +7,7 @@ class CKTextAreaWidget(widgets.TextArea):
 
     def __call__(self, field, **kwargs):    # 将 HTML 标签中的 class 的值设定为 ckedior
 
+        print('__call___')
         kwargs.setdefault('class_', 'ckeditor')
         return super(CKTextAreaWidget, self).__call__(field, **kwargs)
 
