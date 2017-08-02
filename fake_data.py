@@ -20,8 +20,7 @@ Tags = [tag_one, tag_two, tag_three, tag_four]
 Text = u'放空自己 ╮(╯_╰)╭  一片空白~~~~~~~~~~~~~~~'
 
 for i in range(100):
-    new_Post = Post(title='Post'+str(i))
-    new_Post.id = str(uuid4())
+    new_Post = Post(id=str(uuid4()), title='Post'+str(i))
     new_Post.user_id = user0.id
     new_Post.publish_date = datetime.datetime.now()
     new_Post.text = Text
