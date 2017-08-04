@@ -2,7 +2,7 @@ from flask import Flask,redirect, url_for
 
 from LQBBlog.config import DevConfig
 from LQBBlog.controllers import blog, main
-from LQBBlog.controllers.admin import CustomModelView, PostView, SysFileAdmin, AdminIndexView
+from LQBBlog.controllers.admin import CustomModelView, PostView, SysFileAdmin, HomeView
 
 from LQBBlog.models import db, Role, Tag, Reminder, Comment, Post, User
 from LQBBlog.extensions import bcrypt, login_manger, principal, flask_celery, cache, \
@@ -32,7 +32,8 @@ def create_app(object_name):
     assets_env.register('main_css', main_css)
     assets_env.register('main_js', main_js)
 
-    flask_admin.init_app(app)
+    flask_admin.init_app(app, index_view=HomeView(name='导航栏'))
+    # flask_admin.add_view(HomeView(name='导航栏'))
     # flask_admin.add_view(CustomView(name='自定义'))
 
     models = [Role, Tag, Reminder, Comment, User] # 给
