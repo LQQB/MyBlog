@@ -7,6 +7,7 @@ from flask_mail import Mail
 from flask_cache import Cache       # 网页缓存
 from flask_assets import Environment, Bundle # 压缩 css/js
 from flask_admin import  Admin
+from flask_babelex import Babel # 国际化 工具包
 
 bcrypt = Bcrypt()
 login_manger = LoginManager()
@@ -16,6 +17,7 @@ mail = Mail()
 cache = Cache()
 assets_env = Environment()
 flask_admin = Admin(name='后台管理系统')
+flask_babel = Babel()
 
 # oauth = OAuth
 #

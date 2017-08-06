@@ -46,18 +46,33 @@ class PostView(ModelView):
     edit_template = 'admin/post_edit.html'
 
 
-class SysFileAdmin(FileAdmin):
-
+class SysImagesAdmin(FileAdmin):
+    '''
+        图片 文件管理
+    '''
     def is_accessible(self):
         return current_user.is_authenticated() and\
             admin_permission.can()
 
     can_mkdir = False
-    can_upload = False
-    can_delete = False
-    can_rename = False
 
 
-    allowed_extensions = ('swf', 'jpg', 'gif', 'png', 'pdf')
-    list_template = 'admin/file_list.html'
+
+    allowed_extensions = ('jpg', 'gif', 'png')
+    list_template = 'admin/file_list_Images.html'
     pass
+
+
+class SysPDFAdmin(FileAdmin):
+    '''
+        PDF 文件管理
+    '''
+    def is_accessible(self):
+        return current_user.is_authenticated() and\
+            admin_permission.can()
+
+    can_mkdir = False
+
+
+    allowed_extensions = ( 'pdf')
+    list_template = 'admin/file_list_PDF.html'

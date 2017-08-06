@@ -20,3 +20,5 @@ class DevConfig(Config):
     CACHE_TYPE = 'simple'   # 缓存配置
 
     ASSETS_DEBUG = True
+
+    BABEL_DEFAULT_LOCALE = 'zh_CN'
