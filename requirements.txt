@@ -42,7 +42,7 @@ oauthlib==2.0.2
 pickleshare==0.7.4
 prompt-toolkit==1.0.14
 pycparser==2.18
-Pygments==2.2.0
+Pygments==2.7.4
 PyMySQL==0.7.11
 python-dateutil==2.6.1
 python-editor==1.0.3
